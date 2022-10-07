@@ -1,4 +1,5 @@
 #include "automation.h"
+#ifdef USE_ESP32
 
 #include <esp_gap_ble_api.h>
 #include <esp_gattc_api.h>
@@ -73,3 +74,4 @@ void BLEWriterClientNode::gattc_event_handler(esp_gattc_cb_event_t event, esp_ga
 
 }  // namespace ble_client
 }  // namespace esphome
+#endif

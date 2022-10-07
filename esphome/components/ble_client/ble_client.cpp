@@ -1,10 +1,11 @@
+#ifdef USE_ESP32
+
 #include "esphome/core/log.h"
 #include "esphome/core/application.h"
 #include "esphome/core/helpers.h"
 #include "esphome/components/esp32_ble_tracker/esp32_ble_tracker.h"
 #include "ble_client.h"
 
-#ifdef USE_ESP32
 
 namespace esphome {
 namespace ble_client {
