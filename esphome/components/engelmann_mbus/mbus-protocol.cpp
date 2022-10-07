@@ -14,6 +14,7 @@
 #include <string.h>
 
 #include "mbus-protocol.h"
+#include "esphome/core/log.h"
 
 static int parse_debug = 0, debug = 0;
 static char error_str[512];
@@ -129,7 +130,7 @@ mbus_frame_new(int frame_type)
 {
     mbus_frame *frame = NULL;
 
-    if ((frame = malloc(sizeof(mbus_frame))) != NULL)
+    if ((frame = (mbus_frame *)malloc(sizeof(mbus_frame))) != NULL)
     {
         memset((void *)frame, 0, sizeof(mbus_frame));
 
@@ -181,7 +182,7 @@ mbus_frame_free(mbus_frame *frame)
     if (frame)
     {
         if (frame->next != NULL)
-            mbus_frame_free(frame->next);
+            mbus_frame_free((mbus_frame *)frame->next);
 
         free(frame);
         return 0;
@@ -775,7 +776,7 @@ mbus_data_bin_decode(unsigned char *dst, const unsigned char *src, size_t len, s
     if (src && dst)
     {
         while((i < len) && ((pos+3) < max_len)) {
-            pos += snprintf(&dst[pos], max_len - pos, "%.2X ", src[i]);
+            pos += snprintf((char *)&dst[pos], max_len - pos, "%.2X ", src[i]);
             i++;
         }
 
@@ -896,7 +897,7 @@ mbus_decode_manufacturer(unsigned char byte1, unsigned char byte2)
     m_str[0] = byte1;
     m_str[1] = byte2;
 
-    mbus_data_int_decode(m_str, 2, &m_id);
+    mbus_data_int_decode((unsigned char *)m_str, 2, &m_id);
 
     m_str[0] = (char)(((m_id>>10) & 0x001F) + 64);
     m_str[1] = (char)(((m_id>>5)  & 0x001F) + 64);
@@ -3339,13 +3340,13 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x0F: // special functions
 
-                mbus_data_bin_decode(buff, record->data, record->data_len, sizeof(buff));
+                mbus_data_bin_decode((unsigned char *)buff, record->data, record->data_len, sizeof(buff));
                 break;
 
             case 0x0D: // variable length
                 if (record->data_len <= 0xBF)
                 {
-                    mbus_data_str_decode(buff, record->data, record->data_len);
+                    mbus_data_str_decode((unsigned char *)buff, record->data, record->data_len);
                     break;
                 }
                 /*@fallthrough@*/
@@ -3542,18 +3543,18 @@ mbus_parse(mbus_frame *frame, unsigned char *data, size_t data_size)
         frame->next = NULL;
 
         if (parse_debug)
-            printf("%s: Attempting to parse binary data [size = %zu]\n", __PRETTY_FUNCTION__, data_size);
+            esphome::ESP_LOGD("hallo", "%s: Attempting to parse binary data [size = %zu]\n", __PRETTY_FUNCTION__, data_size);
 
         if (parse_debug)
-            printf("%s: ", __PRETTY_FUNCTION__);
+            esphome::ESP_LOGD("hallo", "%s: ", __PRETTY_FUNCTION__);
 
         for (i = 0; i < data_size && parse_debug; i++)
         {
-            printf("%.2X ", data[i] & 0xFF);
+            esphome::ESP_LOGD("hallo", "%.2X ", data[i] & 0xFF);
         }
 
         if (parse_debug)
-            printf("\n%s: done.\n", __PRETTY_FUNCTION__);
+            esphome::ESP_LOGD("hallo", "\n%s: done.\n", __PRETTY_FUNCTION__);
 
         switch (data[0])
         {
@@ -3575,7 +3576,7 @@ mbus_parse(mbus_frame *frame, unsigned char *data, size_t data_size)
 
                 if (data_size != MBUS_FRAME_BASE_SIZE_SHORT)
                 {
-                    snprintf(error_str, sizeof(error_str), "Too much data in frame.");
+                    esphome::ESP_LOGD("hallo", "Too much data in frame.");
 
                     // too much data... ?
                     return -2;
@@ -3615,7 +3616,7 @@ mbus_parse(mbus_frame *frame, unsigned char *data, size_t data_size)
 
                 if (frame->length1 < 3)
                 {
-                    snprintf(error_str, sizeof(error_str), "Invalid M-Bus frame length.");
+                    esphome::ESP_LOGD("hallo",  "Invalid M-Bus frame length.");
 
                     // not a valid M-bus frame
                     return -2;
@@ -3623,7 +3624,7 @@ mbus_parse(mbus_frame *frame, unsigned char *data, size_t data_size)
 
                 if (frame->length1 != frame->length2)
                 {
-                    snprintf(error_str, sizeof(error_str), "Invalid M-Bus frame length.");
+                    esphome::ESP_LOGD("hallo",  "Invalid M-Bus frame length.");
 
                     // not a valid M-bus frame
                     return -2;
@@ -3640,7 +3641,7 @@ mbus_parse(mbus_frame *frame, unsigned char *data, size_t data_size)
 
                 if (data_size > (size_t)(MBUS_FRAME_FIXED_SIZE_LONG + len))
                 {
-                    snprintf(error_str, sizeof(error_str), "Too much data in frame.");
+                    esphome::ESP_LOGD("hallo",  "Too much data in frame.");
 
                     // too much data... ?
                     return -2;
@@ -3679,7 +3680,7 @@ mbus_parse(mbus_frame *frame, unsigned char *data, size_t data_size)
                 // successfully parsed data
                 return 0;
             default:
-                snprintf(error_str, sizeof(error_str), "Invalid M-Bus frame start.");
+                esphome::ESP_LOGD("hallo", "Invalid M-Bus frame start.");
 
                 // not a valid M-Bus frame header (start byte)
                 return -4;
@@ -3687,7 +3688,7 @@ mbus_parse(mbus_frame *frame, unsigned char *data, size_t data_size)
 
     }
 
-    snprintf(error_str, sizeof(error_str), "Got null pointer to frame, data or zero data_size.");
+    esphome::ESP_LOGD("hallo", "Got null pointer to frame, data or zero data_size.");
 
     return -1;
 }
@@ -4199,7 +4200,7 @@ mbus_frame_internal_pack(mbus_frame *frame, mbus_frame_data *frame_data)
             //
             // pack all data records
             //
-            for (record = frame_data->data_var.record; record; record = record->next)
+            for (record = frame_data->data_var.record; record; record = (mbus_data_record *)record->next)
             {
                 // pack DIF
                 if (parse_debug)
@@ -4265,7 +4266,7 @@ mbus_frame_print(mbus_frame *frame)
     if (frame == NULL)
         return -1;
 
-    for (iter = frame; iter; iter = iter->next)
+    for (iter = frame; iter; iter = (mbus_frame *)iter->next)
     {
         if ((len = mbus_frame_pack(iter, data_buff, sizeof(data_buff))) == -1)
         {
@@ -4352,7 +4353,7 @@ mbus_data_variable_print(mbus_data_variable *data)
     {
         mbus_data_variable_header_print(&(data->header));
 
-        for (record = data->record, i = 0; record; record = record->next, i++)
+        for (record = data->record, i = 0; record; record = (mbus_data_record *)record->next, i++)
         {
             printf("Record ID         = %d\n", i);
             // DIF
@@ -4538,16 +4539,16 @@ mbus_str_xml_encode(unsigned char *dst, const unsigned char *src, size_t max_len
             switch (src[i])
             {
                 case '&':
-                    len += snprintf(&dst[len], max_len - len, "&amp;");
+                    len += snprintf((char *)&dst[len], max_len - len, "&amp;");
                     break;
                 case '<':
-                    len += snprintf(&dst[len], max_len - len, "&lt;");
+                    len += snprintf((char *)&dst[len], max_len - len, "&lt;");
                     break;
                 case '>':
-                    len += snprintf(&dst[len], max_len - len, "&gt;");
+                    len += snprintf((char *)&dst[len], max_len - len, "&gt;");
                     break;
                 case '"':
-                    len += snprintf(&dst[len], max_len - len, "&quot;");
+                    len += snprintf((char *)&dst[len], max_len - len, "&quot;");
                     break;
                 default:
                     dst[len++] = src[i];
@@ -4581,11 +4582,11 @@ mbus_data_variable_header_xml(mbus_data_variable_header *header)
                 mbus_decode_manufacturer(header->manufacturer[0], header->manufacturer[1]));
         len += snprintf(&buff[len], sizeof(buff) - len, "        <Version>%d</Version>\n", header->version);
 
-        mbus_str_xml_encode(str_encoded, mbus_data_product_name(header), sizeof(str_encoded));
+        mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)mbus_data_product_name(header), sizeof(str_encoded));
 
         len += snprintf(&buff[len], sizeof(buff) - len, "        <ProductName>%s</ProductName>\n", str_encoded);
 
-        mbus_str_xml_encode(str_encoded, mbus_data_variable_medium_lookup(header->medium), sizeof(str_encoded));
+        mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)mbus_data_variable_medium_lookup(header->medium), sizeof(str_encoded));
 
         len += snprintf(&buff[len], sizeof(buff) - len, "        <Medium>%s</Medium>\n", str_encoded);
         len += snprintf(&buff[len], sizeof(buff) - len, "        <AccessNumber>%d</AccessNumber>\n", header->access_no);
@@ -4639,7 +4640,7 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
         }
         else
         {
-            mbus_str_xml_encode(str_encoded, mbus_data_record_function(record), sizeof(str_encoded));
+            mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)mbus_data_record_function(record), sizeof(str_encoded));
             len += snprintf(&buff[len], sizeof(buff) - len,
                             "        <Function>%s</Function>\n", str_encoded);
 
@@ -4655,12 +4656,12 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
                                 mbus_data_record_device(record));
             }
 
-            mbus_str_xml_encode(str_encoded, mbus_data_record_unit(record), sizeof(str_encoded));
+            mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)mbus_data_record_unit(record), sizeof(str_encoded));
             len += snprintf(&buff[len], sizeof(buff) - len,
                             "        <Unit>%s</Unit>\n", str_encoded);
         }
 
-        mbus_str_xml_encode(str_encoded, mbus_data_record_value(record), sizeof(str_encoded));
+        mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)mbus_data_record_value(record), sizeof(str_encoded));
         len += snprintf(&buff[len], sizeof(buff) - len, "        <Value>%s</Value>\n", str_encoded);
 
         if (record->timestamp > 0)
@@ -4704,7 +4705,7 @@ mbus_data_variable_xml(mbus_data_variable *data)
         len += snprintf(&buff[len], buff_size - len, "%s",
                         mbus_data_variable_header_xml(&(data->header)));
 
-        for (record = data->record, i = 0; record; record = record->next, i++)
+        for (record = data->record, i = 0; record; record = (mbus_data_record *)record->next, i++)
         {
             if ((buff_size - len) < 1024)
             {
@@ -4756,7 +4757,7 @@ mbus_data_fixed_xml(mbus_data_fixed *data)
         len += snprintf(&buff[len], buff_size - len, "    <SlaveInformation>\n");
         len += snprintf(&buff[len], buff_size - len, "        <Id>%llX</Id>\n", mbus_data_bcd_decode_hex(data->id_bcd, 4));
 
-        mbus_str_xml_encode(str_encoded, mbus_data_fixed_medium(data), sizeof(str_encoded));
+        mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)mbus_data_fixed_medium(data), sizeof(str_encoded));
         len += snprintf(&buff[len], buff_size - len, "        <Medium>%s</Medium>\n", str_encoded);
 
         len += snprintf(&buff[len], buff_size - len, "        <AccessNumber>%d</AccessNumber>\n", data->tx_cnt);
@@ -4765,10 +4766,10 @@ mbus_data_fixed_xml(mbus_data_fixed *data)
 
         len += snprintf(&buff[len], buff_size - len, "    <DataRecord id=\"0\">\n");
 
-        mbus_str_xml_encode(str_encoded, mbus_data_fixed_function(data->status), sizeof(str_encoded));
+        mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)mbus_data_fixed_function(data->status), sizeof(str_encoded));
         len += snprintf(&buff[len], buff_size - len, "        <Function>%s</Function>\n", str_encoded);
 
-        mbus_str_xml_encode(str_encoded, mbus_data_fixed_unit(data->cnt1_type), sizeof(str_encoded));
+        mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)mbus_data_fixed_unit(data->cnt1_type), sizeof(str_encoded));
         len += snprintf(&buff[len], buff_size - len, "        <Unit>%s</Unit>\n", str_encoded);
         if ((data->status & MBUS_DATA_FIXED_STATUS_FORMAT_MASK) == MBUS_DATA_FIXED_STATUS_FORMAT_BCD)
         {
@@ -4784,10 +4785,10 @@ mbus_data_fixed_xml(mbus_data_fixed *data)
 
         len += snprintf(&buff[len], buff_size - len, "    <DataRecord id=\"1\">\n");
 
-        mbus_str_xml_encode(str_encoded, mbus_data_fixed_function(data->status), sizeof(str_encoded));
+        mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)mbus_data_fixed_function(data->status), sizeof(str_encoded));
         len += snprintf(&buff[len], buff_size - len, "        <Function>%s</Function>\n", str_encoded);
 
-        mbus_str_xml_encode(str_encoded, mbus_data_fixed_unit(data->cnt2_type), sizeof(str_encoded));
+        mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)mbus_data_fixed_unit(data->cnt2_type), sizeof(str_encoded));
         len += snprintf(&buff[len], buff_size - len, "        <Unit>%s</Unit>\n", str_encoded);
         if ((data->status & MBUS_DATA_FIXED_STATUS_FORMAT_MASK) == MBUS_DATA_FIXED_STATUS_FORMAT_BCD)
         {
@@ -4829,7 +4830,7 @@ mbus_data_error_xml(int error)
 
     len += snprintf(&buff[len], buff_size - len, "    <SlaveInformation>\n");
 
-    mbus_str_xml_encode(str_encoded, mbus_data_error_lookup(error), sizeof(str_encoded));
+    mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)mbus_data_error_lookup(error), sizeof(str_encoded));
     len += snprintf(&buff[len], buff_size - len, "        <Error>%s</Error>\n", str_encoded);
 
     len += snprintf(&buff[len], buff_size - len, "    </SlaveInformation>\n\n");
@@ -4938,7 +4939,7 @@ mbus_frame_xml(mbus_frame *frame)
 
             // loop through all records in the current frame, using a global
             // record count as record ID in the XML output
-            for (record = frame_data.data_var.record; record; record = record->next, record_cnt++)
+            for (record = frame_data.data_var.record; record; record = (mbus_data_record *)record->next, record_cnt++)
             {
                 if ((buff_size - len) < 1024)
                 {
@@ -4967,7 +4968,7 @@ mbus_frame_xml(mbus_frame *frame)
 
             frame_cnt++;
 
-            for (iter = frame->next; iter; iter = iter->next, frame_cnt++)
+            for (iter = (mbus_frame *)frame->next; iter; iter = (mbus_frame *)iter->next, frame_cnt++)
             {
                 if (mbus_frame_data_parse(iter, &frame_data) == -1)
                 {
@@ -4977,7 +4978,7 @@ mbus_frame_xml(mbus_frame *frame)
 
                 // loop through all records in the current frame, using a global
                 // record count as record ID in the XML output
-                for (record = frame_data.data_var.record; record; record = record->next, record_cnt++)
+                for (record = frame_data.data_var.record; record; record = (mbus_data_record *)record->next, record_cnt++)
                 {
                     if ((buff_size - len) < 1024)
                     {
@@ -5084,7 +5085,7 @@ mbus_data_record_free(mbus_data_record *record)
 {
     if (record)
     {
-        mbus_data_record *next = record->next;
+        mbus_data_record *next = (mbus_data_record *)record->next;
 
         free(record);
 
@@ -5110,7 +5111,7 @@ mbus_data_record_append(mbus_data_variable *data, mbus_data_record *record)
         else
         {
             // find the end of the list
-            for (iter = data->record; iter->next; iter = iter->next);
+            for (iter = data->record; iter->next; iter = (mbus_data_record *)iter->next);
 
             iter->next = record;
         }
