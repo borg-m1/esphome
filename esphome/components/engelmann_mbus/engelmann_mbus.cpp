@@ -8,6 +8,9 @@
 namespace esphome {
 namespace engelmannMBus {
 
+static const char *const TAG = "engelmann_mbus";
+
+
 static const uint8_t MBUS_REQ_UD2[] = {0x10, 0x5b, 0x00, 0x5b, 0x16};
 
 
