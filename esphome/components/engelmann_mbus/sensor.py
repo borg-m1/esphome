@@ -25,7 +25,7 @@ DEPENDENCIES = ["uart"]
 
 engelmann_mbus_ns = cg.esphome_ns.namespace("engelmann_mbus")
 Engelmann_mbus = engelmann_mbus_ns.class_(
-    "engelmann_mbus", cg.PollingComponent, uart.UARTDevice
+    "EngelmannMBus", cg.PollingComponent, uart.UARTDevice
 )
 
 CONFIG_SCHEMA = (
