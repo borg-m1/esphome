@@ -23,9 +23,11 @@ void EngelmannMBus::loop() {
     mbus_frame_data frame_data;
     
     if (this->req_sent && this->available()) {
+        ESP_LOGD("hallo", "UART available!");
         if(mbus_serial_recv_frame(&frame) != MBUS_RECV_RESULT_OK) {
             return;
         }
+        ESP_LOGD("hallo", "MBUS frame received");
         this->req_sent = false;
         if(mbus_frame_data_parse(&frame, &frame_data) == 0) {
             ESP_LOGD("hallo", "MBUS parse successful!");
