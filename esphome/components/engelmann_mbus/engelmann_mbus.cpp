@@ -51,7 +51,7 @@ int EngelmannMBus::mbus_serial_recv_frame(mbus_frame *frame)
 
     if (frame == NULL)
     {
-        fprintf(stderr, "%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
+        ESP_LOGD("hallo", "%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
         return MBUS_RECV_RESULT_ERROR;
     }
 
@@ -71,16 +71,16 @@ int EngelmannMBus::mbus_serial_recv_frame(mbus_frame *frame)
             return MBUS_RECV_RESULT_ERROR;
         }
 
-        //printf("%s: Attempt to read %d bytes [len = %d]\n", __PRETTY_FUNCTION__, remaining, len);
+        ESP_LOGD("hallo", "%s: Attempt to read %d bytes [len = %d]\n", __PRETTY_FUNCTION__, remaining, len);
 
         if ((nread = this->read_array(&buff[len], remaining)) == -1)
         {
-       //     fprintf(stderr, "%s: aborting recv frame (remaining = %d, len = %d, nread = %d)\n",
-         //          __PRETTY_FUNCTION__, remaining, len, nread);
+            ESP_LOGD("hallo", "%s: aborting recv frame (remaining = %d, len = %d, nread = %d)\n",
+                   __PRETTY_FUNCTION__, remaining, len, nread);
             return MBUS_RECV_RESULT_ERROR;
         }
 
-//   printf("%s: Got %d byte [remaining %d, len %d]\n", __PRETTY_FUNCTION__, nread, remaining, len);
+   ESP_LOGD("hallo", "%s: Got %d byte [remaining %d, len %d]\n", __PRETTY_FUNCTION__, nread, remaining, len);
 
         if (nread == 0)
         {
@@ -89,7 +89,7 @@ int EngelmannMBus::mbus_serial_recv_frame(mbus_frame *frame)
             if (timeouts >= 3)
             {
                 // abort to avoid endless loop
-                fprintf(stderr, "%s: Timeout\n", __PRETTY_FUNCTION__);
+                ESP_LOGD("hallo", "%s: Timeout\n", __PRETTY_FUNCTION__);
                 break;
             }
         }
@@ -113,13 +113,13 @@ int EngelmannMBus::mbus_serial_recv_frame(mbus_frame *frame)
     if (remaining != 0)
     {
         // Would be OK when e.g. scanning the bus, otherwise it is a failure.
-        // printf("%s: M-Bus layer failed to receive complete data.\n", __PRETTY_FUNCTION__);
+         ESP_LOGD("hallo", "%s: M-Bus layer failed to receive complete data.\n", __PRETTY_FUNCTION__);
         return MBUS_RECV_RESULT_INVALID;
     }
 
     if (len == -1)
     {
-        fprintf(stderr, "%s: M-Bus layer failed to parse data.\n", __PRETTY_FUNCTION__);
+        ESP_LOGD("hallo", "%s: M-Bus layer failed to parse data.\n", __PRETTY_FUNCTION__);
         return MBUS_RECV_RESULT_ERROR;
     }
 
