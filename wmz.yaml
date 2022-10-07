@@ -1,0 +1,49 @@
+esphome:
+  name: wmz-d1
+
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "48067e22c66655a321ad7741ed57d57f"
+
+wifi:
+  ssid: "wifi_ssid"
+  password: "wifi_password"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Wmz-D1 Fallback Hotspot"
+    password: "qyGkCGF4gaa3"
+
+captive_portal:
+    
+uart:
+  tx_pin: D1
+  rx_pin: D2
+  baud_rate: 2400
+  parity: EVEN
+  debug:
+    direction: BOTH
+    dummy_receiver: true
+
+sensor:
+  - platform: engelmann_mbus
+    temperature:
+      name: 'Engelmann Temperature'
+
+    update_interval: 60s
+
+
+#time:
+#  - platform: sntp
+#    on_time:
+#      - seconds: /5
+#        then:
+#          - uart.write: [0x10, 0x5b, 0x00, 0x5b, 0x16]

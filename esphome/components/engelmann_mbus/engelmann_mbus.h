@@ -1,10 +1,11 @@
 #pragma once
 
 #include "esphome/core/component.h"
-#include "esphome/components/light/addressable_light_effect.h"
 #include "esphome/components/uart/uart.h"
+#include "esphome/components/sensor/sensor.h"
 
-#include "libmbus/mbus-protocol.h"
+
+#include "mbus-protocol.h"
 
 
 namespace esphome {
@@ -15,6 +16,8 @@ class EngelmannMBus : public PollingComponent, public uart::UARTDevice {
   // constructor
   EngelmannMBus() : PollingComponent(15000) {}
 
+  void set_temperature_sensor(sensor::Sensor *temperature_sensor) { temperature_sensor_ = temperature_sensor; }
+
   float get_setup_priority() const override 
   { return esphome::setup_priority::LATE; }
 
@@ -23,6 +26,8 @@ class EngelmannMBus : public PollingComponent, public uart::UARTDevice {
   void update() override;
 
   int mbus_serial_recv_frame(mbus_frame *frame);
+protected:
+  sensor::Sensor *temperature_sensor_{nullptr};
 private:
   bool req_sent = false;
 };

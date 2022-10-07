@@ -1,5 +1,5 @@
 #include "engelmann_mbus.h"
-#include "libmbus/mbus-protocol.h"
+#include "mbus-protocol.h"
 #include "arch/cc.h"
 
 #define PACKET_BUFF_SIZE 2048

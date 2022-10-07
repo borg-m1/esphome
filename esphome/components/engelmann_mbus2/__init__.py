@@ -1,1 +1,0 @@
-CODEOWNERS = ["@borg-m1"]
