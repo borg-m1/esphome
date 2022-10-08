@@ -3778,7 +3778,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
         while (i < frame->data_size)
         {
-            esphome::ESP_LOGD("hallo", "i: %d", i);
+            //esphome::ESP_LOGD("hallo", "i: %d", i);
             // Skip filler dif=2F
             if ((frame->data[i] & 0xFF) == MBUS_DIB_DIF_IDLE_FILLER)
             {
@@ -3786,7 +3786,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
               continue;
             }
 
-            esphome::ESP_LOGD("hallo", "free heap space: %d, required space: %d", system_get_free_heap_size(), sizeof(mbus_data_record));
+            //esphome::ESP_LOGD("hallo", "free heap space: %d, required space: %d", system_get_free_heap_size(), sizeof(mbus_data_record));
             if ((record = mbus_data_record_new()) == NULL)
             {
                 // clean up...
