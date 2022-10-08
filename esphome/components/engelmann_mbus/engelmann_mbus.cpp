@@ -21,7 +21,14 @@ void EngelmannMBus::setup() {
 void EngelmannMBus::loop() {
     mbus_frame frame;
     mbus_frame_data frame_data;
-    
+
+    uint8_t test;
+
+    if (this->req_sent && this->available()) {
+        if(this->read_array(&test, 1) == 1)
+            ESP_LOGD("hallo", "%s: value: %.2X", __PRETTY_FUNCTION__, test);
+    }
+    /*
     if (this->req_sent && this->available()) {
         ESP_LOGD("hallo", "UART available!");
         if(mbus_serial_recv_frame(&frame) != MBUS_RECV_RESULT_OK) {
@@ -33,13 +40,13 @@ void EngelmannMBus::loop() {
             ESP_LOGD("hallo", "MBUS parse successful!");
         }
     }
+    */
 }
 
 // called every n ms (PollingComponent)
 void EngelmannMBus::update() {
     this->write_array(MBUS_REQ_UD2, sizeof(MBUS_REQ_UD2));
     //this->flush();
-    delay(100);
 
     this->req_sent = true;
 }
