@@ -80,7 +80,7 @@ int EngelmannMBus::mbus_serial_recv_frame(mbus_frame *frame)
             return MBUS_RECV_RESULT_ERROR;
         }
 
-        ESP_LOGD("hallo", "%s: Got %d byte [remaining %d, len %d, value: %.2X]\n", __PRETTY_FUNCTION__, nread, remaining, len, buff[0]);
+        ESP_LOGD("hallo", "%s: Got %d byte [remaining %d, len %d, first value: %.2X]\n", __PRETTY_FUNCTION__, nread, remaining, len, buff[len]);
 
         if (nread == 0)
         {
