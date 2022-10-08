@@ -66,7 +66,9 @@ void EngelmannMBus::loop() {
         if(doc.Parse(xml_result) == tinyxml2::XMLError::XML_SUCCESS)
             ESP_LOGD("hallo", "doc parse success!");
         const char* title = doc.FirstChildElement( "MBusData" )->FirstChildElement( "SlaveInformation" )->FirstChildElement( "Id" )->GetText();
-        ESP_LOGD("hallo", "%d", title);
+        
+        if(title != 0)
+            ESP_LOGD("hallo", "%s", title);
         
 
         free(xml_result);
