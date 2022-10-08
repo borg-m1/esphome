@@ -25,8 +25,12 @@ void EngelmannMBus::loop() {
     uint8_t test;
 
     if (this->req_sent && this->available()) {
-        if(this->read_array(&test, 1) == 1)
-            ESP_LOGD("hallo", "%s: value: %.2X", __PRETTY_FUNCTION__, test);
+        int read;
+        read = this->read_array(&test, 1);
+        if(read == 1)
+            ESP_LOGD("hallo", "value: %.2X", test);
+        else
+            ESP_LOGD("hallo", "read was: %d", read);
     }
     /*
     if (this->req_sent && this->available()) {
