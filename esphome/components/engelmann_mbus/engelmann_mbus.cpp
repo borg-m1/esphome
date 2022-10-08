@@ -20,7 +20,8 @@ void EngelmannMBus::setup() {
 
 void EngelmannMBus::loop() {
     mbus_frame frame;
-    mbus_frame_data frame_data;
+    mbus_frame_data reply_data;
+    char *xml_result;
 
     /*
     uint8_t test [2];
@@ -42,10 +43,18 @@ void EngelmannMBus::loop() {
         }
         ESP_LOGD("hallo", "MBUS frame received");
         this->req_sent = false;
-        if(mbus_frame_data_parse(&frame, &frame_data) == 0) {
+        if(mbus_frame_data_parse(&frame, &reply_data) == 0) {
             ESP_LOGD("hallo", "MBUS parse successful!");
             this->flush();
         }
+        if ((xml_result = mbus_frame_data_xml(&reply_data)) == NULL)
+        {
+            ESP_LOGD("hallo", "Failed to generate XML representation of MBUS frame: %s", mbus_error_str());
+
+            return;
+        }
+        ESP_LOGD("hallo", "%s", xml_result);
+        free(xml_result);
     }
     
 }
