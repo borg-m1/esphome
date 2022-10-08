@@ -38,7 +38,7 @@ void EngelmannMBus::loop() {
 // called every n ms (PollingComponent)
 void EngelmannMBus::update() {
     this->write_array(MBUS_REQ_UD2, sizeof(MBUS_REQ_UD2));
-    this->flush();
+    //this->flush();
 
     this->req_sent = true;
 }
