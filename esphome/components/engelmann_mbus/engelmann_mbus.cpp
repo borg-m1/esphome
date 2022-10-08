@@ -47,6 +47,8 @@ void EngelmannMBus::loop() {
             ESP_LOGD("hallo", "MBUS parse successful!");
             this->flush();
         }
+        else
+            return;
         if ((xml_result = mbus_frame_data_xml(&reply_data)) == NULL)
         {
             ESP_LOGD("hallo", "Failed to generate XML representation of MBUS frame: %s", mbus_error_str());
