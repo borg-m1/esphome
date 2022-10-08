@@ -3961,13 +3961,13 @@ mbus_frame_data_parse(mbus_frame *frame, mbus_frame_data *data)
 
     if (frame == NULL)
     {
-        snprintf(error_str, sizeof(error_str), "Got null pointer to frame.");
+        esphome::ESP_LOGD("hallo", "Got null pointer to frame.");
         return -1;
     }
 
     if (data == NULL)
     {
-        snprintf(error_str, sizeof(error_str), "Got null pointer to data.");
+        esphome::ESP_LOGD("hallo", "Got null pointer to data.");
         return -1;
     }
 
@@ -3994,7 +3994,7 @@ mbus_frame_data_parse(mbus_frame *frame, mbus_frame_data *data)
         {
             if (frame->data_size == 0)
             {
-                snprintf(error_str, sizeof(error_str), "Got zero data_size.");
+                esphome::ESP_LOGD("hallo", "Got zero data_size.");
 
                 return -1;
             }
@@ -4006,7 +4006,7 @@ mbus_frame_data_parse(mbus_frame *frame, mbus_frame_data *data)
         {
             if (frame->data_size == 0)
             {
-                snprintf(error_str, sizeof(error_str), "Got zero data_size.");
+                esphome::ESP_LOGD("hallo", "Got zero data_size.");
 
                 return -1;
             }
@@ -4016,13 +4016,13 @@ mbus_frame_data_parse(mbus_frame *frame, mbus_frame_data *data)
         }
         else
         {
-            snprintf(error_str, sizeof(error_str), "Unknown control information 0x%.2x", frame->control_information);
+            esphome::ESP_LOGD("hallo", "Unknown control information 0x%.2x", frame->control_information);
 
             return -1;
         }
     }
 
-    snprintf(error_str, sizeof(error_str), "Wrong direction in frame (master to slave)");
+    esphome::ESP_LOGD("hallo", "Wrong direction in frame (master to slave)");
 
     return -1;
 }
