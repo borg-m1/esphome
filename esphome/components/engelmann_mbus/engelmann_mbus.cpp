@@ -211,6 +211,8 @@ EngelmannMBus::mbus_serial_recv_frame(mbus_frame *frame)
         return -1;
     }
 
+    ESP_LOGD("hallo", "parsed %d bytes", len);
+
     return 0;
 }
 }
