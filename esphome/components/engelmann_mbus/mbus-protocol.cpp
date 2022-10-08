@@ -16,6 +16,9 @@
 #include "mbus-protocol.h"
 #include "esphome/core/log.h"
 
+#include "arch/cc.h"
+
+
 static int parse_debug = 0, debug = 0;
 static char error_str[512];
 
@@ -3780,9 +3783,11 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
               continue;
             }
 
+            esphome::ESP_LOGD("hallo", "free heap space: %d, required space: %d", system_get_free_heap_size(), sizeof(mbus_data_record));
             if ((record = mbus_data_record_new()) == NULL)
             {
                 // clean up...
+                
                 esphome::ESP_LOGD("hallo", "New data record allocate fail.");
                 return (-2);
             }
