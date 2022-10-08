@@ -4011,6 +4011,8 @@ mbus_frame_data_parse(mbus_frame *frame, mbus_frame_data *data)
                 return -1;
             }
 
+            esphome::ESP_LOGD("hallo", "Parsing variable data frame.");
+
             data->type = MBUS_DATA_TYPE_VARIABLE;
             return mbus_data_variable_parse(frame, &(data->data_var));
         }
