@@ -43,6 +43,7 @@ void EngelmannMBus::loop() {
         }
         ESP_LOGD("hallo", "MBUS frame received");
         this->req_sent = false;
+        ESP_LOGD("hallo", "free heap space: %d", system_get_free_heap_size());
         if(mbus_frame_data_parse(&frame, &reply_data) == 0) {
             ESP_LOGD("hallo", "MBUS parse successful!");
             
