@@ -22,13 +22,13 @@ void EngelmannMBus::loop() {
     mbus_frame frame;
     mbus_frame_data frame_data;
 
-    uint8_t test;
+    uint8_t test [2];
 
     if (this->req_sent && this->available()) {
         int read;
-        read = this->read_array(&test, 1);
-        if(read == 1)
-            ESP_LOGD("hallo", "value: %.2X", test);
+        read = this->read_array(test, 2);
+        if(read == 2)
+            ESP_LOGD("hallo", "value1: %.2X, value2: %.2X", test[0], test[1]);
         else
             ESP_LOGD("hallo", "read was: %d", read);
     }
