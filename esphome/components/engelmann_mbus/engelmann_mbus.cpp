@@ -1,6 +1,7 @@
 #include "engelmann_mbus.h"
 #include "mbus-protocol.h"
 #include "arch/cc.h"
+#include <string.h>
 
 #include <tinyxml2.h>
 #define PACKET_BUFF_SIZE 2048
@@ -71,7 +72,10 @@ void EngelmannMBus::loop() {
 			 ele;
 			 ele = ele->NextSiblingElement() )
 		{
-			ESP_LOGD("hallo", "%s", ele->Name());
+            const char* name = ele->Name();
+			ESP_LOGD("hallo", "%s", name);
+            if(std::string(name) == "DataRecord")
+                ESP_LOGD("hallo", "Unit: %s", ele->FirstChildElement("Unit")->GetText());
 		}
 
         //if(title != 0)
