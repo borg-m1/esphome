@@ -67,8 +67,15 @@ void EngelmannMBus::loop() {
             ESP_LOGD("hallo", "doc parse success!");
         const char* title = doc.FirstChildElement( "MBusData" )->FirstChildElement( "SlaveInformation" )->FirstChildElement( "ProductName" )->GetText();
         
-        if(title != 0)
-            ESP_LOGD("hallo", "%s", title);
+        for( XMLElement* ele = doc.FirstChildElement( "MBusData" );
+			 ele;
+			 ele = ele->NextSiblingElement() )
+		{
+			ESP_LOGD("hallo", "%s", ele->Name());
+		}
+
+        //if(title != 0)
+        //    ESP_LOGD("hallo", "%s", title);
         
 
         free(xml_result);
