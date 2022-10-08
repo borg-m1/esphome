@@ -67,7 +67,7 @@ void EngelmannMBus::loop() {
             ESP_LOGD("hallo", "doc parse success!");
         const char* title = doc.FirstChildElement( "MBusData" )->FirstChildElement( "SlaveInformation" )->FirstChildElement( "ProductName" )->GetText();
         
-        for( tinyxml2::XMLElement* ele = doc.FirstChildElement( "MBusData" );
+        for( tinyxml2::XMLElement* ele = doc.FirstChildElement( "MBusData" )->FirstChildElement( "SlaveInformation" )->FirstChildElement();
 			 ele;
 			 ele = ele->NextSiblingElement() )
 		{
