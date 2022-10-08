@@ -2,6 +2,7 @@
 #include "mbus-protocol.h"
 #include "arch/cc.h"
 
+#include <tinyxml2.h>
 #define PACKET_BUFF_SIZE 2048
 
 
@@ -22,6 +23,7 @@ void EngelmannMBus::loop() {
     mbus_frame frame;
     mbus_frame_data reply_data;
     char *xml_result;
+    tinyxml2::XMLDocument doc;
 
     /*
     uint8_t test [2];
@@ -60,6 +62,12 @@ void EngelmannMBus::loop() {
             return;
         }
         ESP_LOGD("hallo", "%s", xml_result);
+
+        doc.Parse(xml_result);
+        const char* title = doc.FirstChildElement( "MBusData" )->FirstChildElement( "SlaveInformation" )->GetText();
+        ESP_LOGD("hallo", "%s", title);
+
+
         free(xml_result);
 
             // manual free
@@ -79,92 +87,7 @@ void EngelmannMBus::update() {
     this->req_sent = true;
 }
 
-/*
 int EngelmannMBus::mbus_serial_recv_frame(mbus_frame *frame)
-{
-    uint8_t buff[PACKET_BUFF_SIZE];
-    int remaining, timeouts;
-    ssize_t len, nread;
-
-    if (frame == NULL)
-    {
-        ESP_LOGD("hallo", "%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
-        return MBUS_RECV_RESULT_ERROR;
-    }
-
-    memset((void *)buff, 0, sizeof(buff));
-
-    //
-    // read data until a packet is received
-    //
-    remaining = 1; // start by reading 1 byte
-    len = 0;
-    timeouts = 0;
-
-    do {
-        if (len + remaining > PACKET_BUFF_SIZE)
-        {
-            // avoid out of bounds access
-            return MBUS_RECV_RESULT_ERROR;
-        }
-
-        ESP_LOGD("hallo", "%s: Attempt to read %d bytes [len = %d]\n", __PRETTY_FUNCTION__, remaining, len);
-
-        if ((nread = this->read_array(&buff[len], remaining)) == -1)
-        {
-            ESP_LOGD("hallo", "%s: aborting recv frame (remaining = %d, len = %d, nread = %d)\n",
-                   __PRETTY_FUNCTION__, remaining, len, nread);
-            return MBUS_RECV_RESULT_ERROR;
-        }
-
-        ESP_LOGD("hallo", "%s: Got %d byte [remaining %d, len %d, first value: %.2X]\n", __PRETTY_FUNCTION__, nread, remaining, len, buff[len]);
-
-        if (nread == 0)
-        {
-            timeouts++;
-
-            if (timeouts >= 3)
-            {
-                // abort to avoid endless loop
-                ESP_LOGD("hallo", "%s: Timeout\n", __PRETTY_FUNCTION__);
-                break;
-            }
-        }
-
-        if (len > (SSIZE_MAX-nread))
-        {
-            // avoid overflow
-            return MBUS_RECV_RESULT_ERROR;
-        }
-
-        len += nread;
-
-    } while ((remaining = mbus_parse(frame, buff, len)) > 0);
-
-    if (len == 0)
-    {
-        // No data received
-        return MBUS_RECV_RESULT_TIMEOUT;
-    }
-
-    if (remaining != 0)
-    {
-        // Would be OK when e.g. scanning the bus, otherwise it is a failure.
-         ESP_LOGD("hallo", "%s: M-Bus layer failed to receive complete data.\n", __PRETTY_FUNCTION__);
-        return MBUS_RECV_RESULT_INVALID;
-    }
-
-    if (len == -1)
-    {
-        ESP_LOGD("hallo", "%s: M-Bus layer failed to parse data.\n", __PRETTY_FUNCTION__);
-        return MBUS_RECV_RESULT_ERROR;
-    }
-
-    return MBUS_RECV_RESULT_OK;
-}
-*/
-int
-EngelmannMBus::mbus_serial_recv_frame(mbus_frame *frame)
 {
     uint8_t buff[PACKET_BUFF_SIZE];
     int len, remaining, nread, timeouts;
