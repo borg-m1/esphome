@@ -75,9 +75,10 @@ void EngelmannMBus::loop() {
             const char* name = ele->Name();
 			ESP_LOGD("hallo", "%s", name);
             if(std::string(name) == "DataRecord")
-                std::string unit(ele->FirstChildElement("Unit")->GetText());
-                ESP_LOGD("hallo", "Unit: %s", unit.c_str());
-                std::size_t found = unit.find("Flow temperature");
+                std::string abcdef(ele->FirstChildElement("Unit")->GetText());
+                std::string abcdef(ele->FirstChildElement("Unit")->GetText());
+                ESP_LOGD("hallo", "Unit: %s", abcdef.c_str());
+                std::size_t found = abcdef.find("Flow temperature");
                 if (found!=std::string::npos) {
                     std::string value(ele->FirstChildElement("Value")->GetText());
                     ESP_LOGD("hallo", "Temperature: %s", value.c_str());
