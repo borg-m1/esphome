@@ -44,6 +44,7 @@ void EngelmannMBus::loop() {
         this->req_sent = false;
         if(mbus_frame_data_parse(&frame, &frame_data) == 0) {
             ESP_LOGD("hallo", "MBUS parse successful!");
+            this->flush();
         }
     }
     
