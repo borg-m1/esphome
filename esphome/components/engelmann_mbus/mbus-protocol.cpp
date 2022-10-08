@@ -3774,8 +3774,11 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
         data->record = NULL;
 
+        esphome::ESP_LOGD("hallo", "frame data size: %d", frame->data_size);
+
         while (i < frame->data_size)
         {
+            esphome::ESP_LOGD("hallo", "i: %d", i);
             // Skip filler dif=2F
             if ((frame->data[i] & 0xFF) == MBUS_DIB_DIF_IDLE_FILLER)
             {
