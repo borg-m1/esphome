@@ -39,6 +39,7 @@ void EngelmannMBus::loop() {
 void EngelmannMBus::update() {
     this->write_array(MBUS_REQ_UD2, sizeof(MBUS_REQ_UD2));
     //this->flush();
+    delay(100);
 
     this->req_sent = true;
 }
