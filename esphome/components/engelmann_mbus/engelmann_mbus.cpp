@@ -15,7 +15,7 @@ static const uint8_t MBUS_REQ_UD2[] = {0x10, 0x5b, 0x00, 0x5b, 0x16};
 
 
 void EngelmannMBus::setup() {
-    mbus_parse_set_debug(1);
+    mbus_parse_set_debug(0);
 }
 
 void EngelmannMBus::loop() {
