@@ -3751,7 +3751,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
         if(frame->data_size < i)
         {
-            snprintf(error_str, sizeof(error_str), "Variable header too short.");
+            esphome::ESP_LOGD("hallo", "Variable header too short.");
             return -1;
         }
 
@@ -3829,7 +3829,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 if (record->drh.dib.ndife >= MBUS_DATA_INFO_BLOCK_DIFE_SIZE)
                 {
                     mbus_data_record_free(record);
-                    snprintf(error_str, sizeof(error_str), "Too many DIFE.");
+                    esphome::ESP_LOGD("hallo", "Too many DIFE.");
                     return -1;
                 }
 
@@ -3844,7 +3844,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             if (i > frame->data_size)
             {
                 mbus_data_record_free(record);
-                snprintf(error_str, sizeof(error_str), "Premature end of record at DIF.");
+                esphome::ESP_LOGD("hallo", "Premature end of record at DIF.");
                 return -1;
             }
 
@@ -3861,14 +3861,14 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 if (var_vif_len > MBUS_VALUE_INFO_BLOCK_CUSTOM_VIF_SIZE)
                 {
                     mbus_data_record_free(record);
-                    snprintf(error_str, sizeof(error_str), "Too long variable length VIF.");
+                    esphome::ESP_LOGD("hallo", "Too long variable length VIF.");
                     return -1;
                 }
 
                 if (i + var_vif_len > frame->data_size)
                 {
                     mbus_data_record_free(record);
-                    snprintf(error_str, sizeof(error_str), "Premature end of record at variable length VIF.");
+                    esphome::ESP_LOGD("hallo", "Premature end of record at variable length VIF.");
                     return -1;
                 }
                 mbus_data_str_decode(record->drh.vib.custom_vif, &(frame->data[i]), var_vif_len);
@@ -3891,7 +3891,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                     if (record->drh.vib.nvife >= MBUS_VALUE_INFO_BLOCK_VIFE_SIZE)
                     {
                         mbus_data_record_free(record);
-                        snprintf(error_str, sizeof(error_str), "Too many VIFE.");
+                        esphome::ESP_LOGD("hallo", "Too many VIFE.");
                         return -1;
                     }
 
@@ -3907,7 +3907,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             if (i > frame->data_size)
             {
                 mbus_data_record_free(record);
-                snprintf(error_str, sizeof(error_str), "Premature end of record at VIF.");
+                esphome::ESP_LOGD("hallo", "Premature end of record at VIF.");
                 return -1;
             }
 
@@ -3929,7 +3929,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             if (i + record->data_len > frame->data_size)
             {
                 mbus_data_record_free(record);
-                snprintf(error_str, sizeof(error_str), "Premature end of record at data.");
+                esphome::ESP_LOGD("hallo", "Premature end of record at data.");
                 return -1;
             }
 
