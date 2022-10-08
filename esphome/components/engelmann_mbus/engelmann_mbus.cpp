@@ -64,9 +64,9 @@ void EngelmannMBus::loop() {
         ESP_LOGD("hallo", "%s", xml_result);
 
         doc.Parse(xml_result);
-        const char* title = doc.FirstChildElement( "MBusData" )->FirstChildElement( "SlaveInformation" )->GetText();
-        ESP_LOGD("hallo", "%s", title);
-
+        //const char* title = doc.FirstChildElement( "MBusData" )->FirstChildElement( "SlaveInformation" )->GetText();
+        //ESP_LOGD("hallo", "%s", title);
+        ESP_LOGD("doc parsed", "%s", title);
 
         free(xml_result);
 
