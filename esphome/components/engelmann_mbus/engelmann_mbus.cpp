@@ -61,6 +61,12 @@ void EngelmannMBus::loop() {
         }
         ESP_LOGD("hallo", "%s", xml_result);
         free(xml_result);
+
+            // manual free
+        if (reply_data.data_var.record)
+        {
+            mbus_data_record_free(reply_data.data_var.record); // free's up the whole list
+        }
     }
     
 }
