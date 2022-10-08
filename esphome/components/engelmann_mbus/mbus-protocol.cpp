@@ -3783,6 +3783,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             if ((record = mbus_data_record_new()) == NULL)
             {
                 // clean up...
+                esphome::ESP_LOGD("hallo", "New data record allocate fail.");
                 return (-2);
             }
 
@@ -3946,7 +3947,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
         return 0;
     }
-
+    esphome::ESP_LOGD("hallo", "Not frame and data.");
     return -1;
 }
 
