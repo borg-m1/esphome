@@ -28,18 +28,6 @@ void EngelmannMBus::loop() {
     char *xml_result;
     tinyxml2::XMLDocument doc;
 
-    /*
-    uint8_t test [2];
-
-    if (this->req_sent && this->available()) {
-        int read;
-        read = this->read_array(test, 2);
-        if(read == 2)
-            ESP_LOGD("hallo", "value1: %.2X, value2: %.2X", test[0], test[1]);
-        else
-            ESP_LOGD("hallo", "read was: %d", read);
-    }
-    */
     
     if (this->req_sent && this->available()) {
         ESP_LOGD("hallo", "UART available!");
@@ -134,6 +122,7 @@ void EngelmannMBus::loop() {
                 }
                 
             }
+            values.clear();
 
         //if(title != 0)
         //    ESP_LOGD("hallo", "%s", title);
