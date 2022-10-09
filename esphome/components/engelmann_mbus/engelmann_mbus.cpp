@@ -78,10 +78,14 @@ void EngelmannMBus::loop() {
                 std::string abcdef(ele->FirstChildElement("Unit")->GetText());
                 ESP_LOGD("hallo", "Unit: %s", abcdef.c_str());
                 std::size_t found = abcdef.find("Flow temperature");
+                std::string value(ele->FirstChildElement("Value")->GetText());
+                ESP_LOGD("hallo", "Value: %s", value.c_str());
+                /*
                 if (found!=std::string::npos) {
                     std::string value(ele->FirstChildElement("Value")->GetText());
                     ESP_LOGD("hallo", "Temperature: %s", value.c_str());
                 }
+                */
             }
 
 		}
