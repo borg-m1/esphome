@@ -22,6 +22,7 @@ class EngelmannMBus : public PollingComponent, public uart::UARTDevice {
   void set_power_sensor(sensor::Sensor *power_sensor) { power_sensor_ = power_sensor; }
   void set_flow_rate_sensor(sensor::Sensor *flow_rate_sensor) { flow_rate_sensor_ = flow_rate_sensor; }
   void set_volume_sensor(sensor::Sensor *volume_sensor) { volume_sensor_ = volume_sensor; }
+  void set_energy_sensor(sensor::Sensor *energy_sensor) { energy_sensor_ = energy_sensor; }
 
   float get_setup_priority() const override 
   { return esphome::setup_priority::LATE; }
@@ -38,6 +39,7 @@ protected:
   sensor::Sensor *power_sensor_{nullptr};
   sensor::Sensor *flow_rate_sensor_{nullptr};
   sensor::Sensor *volume_sensor_{nullptr};
+  sensor::Sensor *energy_sensor_{nullptr};
 private:
   bool req_sent = false;
 };

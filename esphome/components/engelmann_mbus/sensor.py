@@ -4,14 +4,14 @@ from esphome.components import sensor, uart
 from esphome.const import (
     CONF_ID,
     CONF_POWER,
-    DEVICE_CLASS_TEMPERATURE,
-    DEVICE_CLASS_POWER,
+    CONF_ENERGY,
     DEVICE_CLASS_ENERGY,
     STATE_CLASS_MEASUREMENT,
     UNIT_CELSIUS,
     UNIT_KELVIN,
     UNIT_WATT,
     UNIT_CUBIC_METER,
+    UNIT_KILOWATT_HOURS,
 )
 
 DEPENDENCIES = ["uart"]
@@ -36,25 +36,25 @@ CONFIG_SCHEMA = (
             cv.Optional(CONF_TEMPERATURE_A): sensor.sensor_schema(
                 unit_of_measurement=UNIT_CELSIUS,
                 accuracy_decimals=0,
-                device_class=DEVICE_CLASS_TEMPERATURE,
+                device_class=DEVICE_CLASS_ENERGY,
                 state_class=STATE_CLASS_MEASUREMENT,
             ),
             cv.Optional(CONF_TEMPERATURE_B): sensor.sensor_schema(
                 unit_of_measurement=UNIT_CELSIUS,
                 accuracy_decimals=0,
-                device_class=DEVICE_CLASS_TEMPERATURE,
+                device_class=DEVICE_CLASS_ENERGY,
                 state_class=STATE_CLASS_MEASUREMENT,
             ),
             cv.Optional(CONF_TEMPERATURE_C): sensor.sensor_schema(
                 unit_of_measurement=UNIT_KELVIN,
                 accuracy_decimals=2,
-                device_class=DEVICE_CLASS_TEMPERATURE,
+                device_class=DEVICE_CLASS_ENERGY,
                 state_class=STATE_CLASS_MEASUREMENT,
             ),
             cv.Optional(CONF_POWER): sensor.sensor_schema(
                 unit_of_measurement=UNIT_WATT,
                 accuracy_decimals=0,
-                device_class=DEVICE_CLASS_POWER,
+                device_class=DEVICE_CLASS_ENERGY,
                 state_class=STATE_CLASS_MEASUREMENT,
             ),
             cv.Optional(CONF_FLOW_RATE): sensor.sensor_schema(
@@ -65,6 +65,12 @@ CONFIG_SCHEMA = (
             ),
             cv.Optional(CONF_VOLUME): sensor.sensor_schema(
                 unit_of_measurement=UNIT_CUBIC_METER,
+                accuracy_decimals=0,
+                device_class=DEVICE_CLASS_ENERGY,
+                state_class=STATE_CLASS_MEASUREMENT,
+            ),
+            cv.Optional(CONF_ENERGY): sensor.sensor_schema(
+                unit_of_measurement=UNIT_KILOWATT_HOURS,
                 accuracy_decimals=0,
                 device_class=DEVICE_CLASS_ENERGY,
                 state_class=STATE_CLASS_MEASUREMENT,
@@ -105,3 +111,7 @@ async def to_code(config):
         conf = config[CONF_VOLUME]
         sens = await sensor.new_sensor(conf)
         cg.add(var.set_volume_sensor(sens))
+    if CONF_ENERGY in config:
+        conf = config[CONF_ENERGY]
+        sens = await sensor.new_sensor(conf)
+        cg.add(var.set_energy_sensor(sens))

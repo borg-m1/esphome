@@ -119,14 +119,20 @@ void EngelmannMBus::loop() {
                 }
                 if (it->first == "Volume flow (m m^3/h)") {
                     if (flow_rate_sensor_ != nullptr) {
-                        flow_rate_sensor_->publish_state(it->second * 16.6667);
+                        flow_rate_sensor_->publish_state(it->second * 1e-3 * 16.6667);
                     }
                 }
                 if (it->first == "Volume (m m^3)") {
                     if (volume_sensor_ != nullptr) {
-                        volume_sensor_->publish_state(it->second);
+                        volume_sensor_->publish_state(it->second * 1e-3);
                     }
                 }
+                if (it->first == "Energy (kWh)") {
+                    if (energy_sensor_ != nullptr) {
+                        energy_sensor_->publish_state(it->second);
+                    }
+                }
+                
             }
 
         //if(title != 0)
