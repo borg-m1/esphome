@@ -99,7 +99,6 @@ void EngelmannMBus::loop() {
                 ESP_LOGD("hallo", "Key: %s, value: %f", it->first.c_str(), it->second);
                 if (it->first == "Flow temperature (deg C)") {
                     if (flow_temperature_sensor_ != nullptr) {
-                        ESP_LOGD("hallo", "publish!");
                         flow_temperature_sensor_->publish_state(it->second);
                     }
                 }
@@ -114,8 +113,8 @@ void EngelmannMBus::loop() {
                     }
                 }
                 if (it->first == "Power (W)") {
-                    if (flow_temperature_sensor_ != nullptr) {
-                        flow_temperature_sensor_->publish_state(it->second);
+                    if (power_sensor_ != nullptr) {
+                        power_sensor_->publish_state(it->second);
                     }
                 }
             }
