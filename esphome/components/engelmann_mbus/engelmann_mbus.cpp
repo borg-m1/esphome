@@ -2,6 +2,7 @@
 #include "mbus-protocol.h"
 #include "arch/cc.h"
 #include <string.h>
+#include <map>
 
 #include <tinyxml2.h>
 #define PACKET_BUFF_SIZE 2048
@@ -15,7 +16,7 @@ static const char *const TAG = "engelmann_mbus";
 
 static const uint8_t MBUS_REQ_UD2[] = {0x10, 0x5b, 0x00, 0x5b, 0x16};
 
-static const std::vector<std::string>unit_list {"Flow temperature", "zwei", "drei"};
+std::map<std::string, float> values;
 
 void EngelmannMBus::setup() {
     mbus_parse_set_debug(0);
@@ -78,22 +79,23 @@ void EngelmannMBus::loop() {
             if(std::string(name) == "DataRecord" && 
                std::string(ele->FirstChildElement("Function")->GetText()) == "Instantaneous value" &&
                std::string(ele->FirstChildElement("StorageNumber")->GetText()) == "0" &&
-               !ele->FirstChildElement("Tariff")) {
-                std::string abcdef(ele->FirstChildElement("Unit")->GetText());
-                ESP_LOGD("hallo", "Unit: %s", abcdef.c_str());
+               !ele->FirstChildElement("Tariff") &&
+               std::string(ele->FirstChildElement("Unit")->GetText()) != "Time Point (time & date)") {
+                std::string unit_str(ele->FirstChildElement("Unit")->GetText());
+                ESP_LOGD("hallo", "Unit: %s", unit_str.c_str());
 
-                std::size_t found = abcdef.find("Flow temperature");
-                std::string value(ele->FirstChildElement("Value")->GetText());
-                ESP_LOGD("hallo", "Value: %s", value.c_str());
-                /*
-                if (found!=std::string::npos) {
-                    std::string value(ele->FirstChildElement("Value")->GetText());
-                    ESP_LOGD("hallo", "Temperature: %s", value.c_str());
-                }
-                */
+                const char* value = ele->FirstChildElement("Value")->GetText();
+                ESP_LOGD("hallo", "Value: %s", value);
+                
+                values.insert(std::make_pair(unit_str, atof(value)));
             }
 
 		}
+
+        for(std::map<std::string, float >::const_iterator it = values.begin();
+                it != values.end(); ++it) {
+                ESP_LOGD("hallo", "Key: %s, value: %f", it->first.c_str(), it->second);
+            }
 
         //if(title != 0)
         //    ESP_LOGD("hallo", "%s", title);
