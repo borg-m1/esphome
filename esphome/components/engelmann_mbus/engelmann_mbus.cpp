@@ -80,7 +80,9 @@ void EngelmannMBus::loop() {
                std::string(ele->FirstChildElement("Function")->GetText()) == "Instantaneous value" &&
                std::string(ele->FirstChildElement("StorageNumber")->GetText()) == "0" &&
                !ele->FirstChildElement("Tariff") &&
-               std::string(ele->FirstChildElement("Unit")->GetText()) != "Time Point (time & date)") {
+               std::string(ele->FirstChildElement("Unit")->GetText()) != "Time Point (time & date)" &&
+               std::string(ele->FirstChildElement("Unit")->GetText()) != "Fabrication number" &&
+               std::string(ele->FirstChildElement("Unit")->GetText()) != "Model / Version") {
                 std::string unit_str(ele->FirstChildElement("Unit")->GetText());
                 ESP_LOGD("hallo", "Unit: %s", unit_str.c_str());
 
@@ -95,6 +97,11 @@ void EngelmannMBus::loop() {
         for(std::map<std::string, float >::const_iterator it = values.begin();
                 it != values.end(); ++it) {
                 ESP_LOGD("hallo", "Key: %s, value: %f", it->first.c_str(), it->second);
+                if (it->first == "Flow temperature (deg C)") {
+                    if (flow_temperature_sensor_ != nullptr) {
+                        flow_temperature_sensor_->publish_state(it->second);
+                    }
+                }
             }
 
         //if(title != 0)

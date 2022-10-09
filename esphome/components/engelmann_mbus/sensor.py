@@ -22,7 +22,7 @@ CONFIG_SCHEMA = (
             cv.GenerateID(): cv.declare_id(Engelmann_mbus),
             cv.Optional(CONF_TEMPERATURE): sensor.sensor_schema(
                 unit_of_measurement=UNIT_CELSIUS,
-                accuracy_decimals=2,
+                accuracy_decimals=0,
                 device_class=DEVICE_CLASS_TEMPERATURE,
                 state_class=STATE_CLASS_MEASUREMENT,
             ),

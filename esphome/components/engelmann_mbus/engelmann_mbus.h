@@ -16,7 +16,7 @@ class EngelmannMBus : public PollingComponent, public uart::UARTDevice {
   // constructor
   EngelmannMBus() : PollingComponent(15000) {}
 
-  void set_temperature_sensor(sensor::Sensor *temperature_sensor) { temperature_sensor_ = temperature_sensor; }
+  void set_flow_temperature_sensor(sensor::Sensor *flow_temperature_sensor) { flow_temperature_sensor_ = flow_temperature_sensor; }
 
   float get_setup_priority() const override 
   { return esphome::setup_priority::LATE; }
@@ -27,7 +27,7 @@ class EngelmannMBus : public PollingComponent, public uart::UARTDevice {
 
   int mbus_serial_recv_frame(mbus_frame *frame);
 protected:
-  sensor::Sensor *temperature_sensor_{nullptr};
+  sensor::Sensor *flow_temperature_sensor_{nullptr};
 private:
   bool req_sent = false;
 };
