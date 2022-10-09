@@ -6,6 +6,7 @@ from esphome.const import (
     CONF_POWER,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_POWER,
+    DEVICE_CLASS_ENERGY,
     STATE_CLASS_MEASUREMENT,
     UNIT_CELSIUS,
     UNIT_KELVIN,
@@ -59,13 +60,13 @@ CONFIG_SCHEMA = (
             cv.Optional(CONF_FLOW_RATE): sensor.sensor_schema(
                 unit_of_measurement="L/min",
                 accuracy_decimals=2,
-                device_class="volume_flow_rate",
+                device_class=DEVICE_CLASS_ENERGY,
                 state_class=STATE_CLASS_MEASUREMENT,
             ),
             cv.Optional(CONF_VOLUME): sensor.sensor_schema(
                 unit_of_measurement=UNIT_CUBIC_METER,
                 accuracy_decimals=0,
-                device_class="volume",
+                device_class=DEVICE_CLASS_ENERGY,
                 state_class=STATE_CLASS_MEASUREMENT,
             ),
         }
@@ -79,8 +80,6 @@ async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)
     await uart.register_uart_device(var, config)
-
-    print(config)
 
     if CONF_TEMPERATURE_A in config:
         conf = config[CONF_TEMPERATURE_A]
