@@ -19,9 +19,9 @@ Engelmann_mbus = engelmann_mbus_ns.class_(
     "EngelmannMBus", cg.PollingComponent, uart.UARTDevice
 )
 
-CONF_TEMPERATURE_A = "temperature_a"
-CONF_TEMPERATURE_B = "temperature_b"
-CONF_TEMPERATURE_C = "temperature_c"
+CONF_TEMPERATURE_A = "flow_temperature"
+CONF_TEMPERATURE_B = "return_temperature"
+CONF_TEMPERATURE_C = "difference_temperature"
 
 CONFIG_SCHEMA = (
     cv.Schema(
