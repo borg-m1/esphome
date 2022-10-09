@@ -102,6 +102,21 @@ void EngelmannMBus::loop() {
                         flow_temperature_sensor_->publish_state(it->second);
                     }
                 }
+                if (it->first == "Return temperature (deg C)") {
+                    if (return_temperature_sensor_ != nullptr) {
+                        return_temperature_sensor_->publish_state(it->second);
+                    }
+                }
+                if (it->first == "Temperature Difference (1e-2  deg C)") {
+                    if (difference_temperature_sensor_ != nullptr) {
+                        difference_temperature_sensor_->publish_state(it->second * 1e-2);
+                    }
+                }
+                if (it->first == "Power (W)") {
+                    if (flow_temperature_sensor_ != nullptr) {
+                        flow_temperature_sensor_->publish_state(it->second);
+                    }
+                }
             }
 
         //if(title != 0)
