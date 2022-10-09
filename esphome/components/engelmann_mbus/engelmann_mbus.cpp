@@ -15,6 +15,7 @@ static const char *const TAG = "engelmann_mbus";
 
 static const uint8_t MBUS_REQ_UD2[] = {0x10, 0x5b, 0x00, 0x5b, 0x16};
 
+static const std::vector<std::string>unit_list {"Flow temperature", "zwei", "drei"};
 
 void EngelmannMBus::setup() {
     mbus_parse_set_debug(0);
@@ -62,7 +63,7 @@ void EngelmannMBus::loop() {
 
             return;
         }
-        ESP_LOGD("hallo", "%s", xml_result);
+        //ESP_LOGD("hallo", "%s", xml_result);
 
         if(doc.Parse(xml_result) == tinyxml2::XMLError::XML_SUCCESS)
             ESP_LOGD("hallo", "doc parse success!");
@@ -75,7 +76,9 @@ void EngelmannMBus::loop() {
             const char* name = ele->Name();
 			//ESP_LOGD("hallo", "%s", name);
             if(std::string(name) == "DataRecord" && 
-               std::string(ele->FirstChildElement("Function")->GetText()) == "Instantaneous value") {
+               std::string(ele->FirstChildElement("Function")->GetText()) == "Instantaneous value" &&
+               std::string(ele->FirstChildElement("StorageNumber")->GetText()) == "0" &&
+               !ele->FirstChildElement("Tariff")) {
                 std::string abcdef(ele->FirstChildElement("Unit")->GetText());
                 ESP_LOGD("hallo", "Unit: %s", abcdef.c_str());
 
