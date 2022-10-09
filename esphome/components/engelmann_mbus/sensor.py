@@ -63,6 +63,8 @@ async def to_code(config):
     await cg.register_component(var, config)
     await uart.register_uart_device(var, config)
 
+    print(config)
+
     if CONF_TEMPERATURE_A in config:
         conf = config[CONF_TEMPERATURE_A]
         sens = await sensor.new_sensor(conf)
