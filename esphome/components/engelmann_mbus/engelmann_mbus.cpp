@@ -84,10 +84,10 @@ void EngelmannMBus::loop() {
                std::string(ele->FirstChildElement("Unit")->GetText()) != "Fabrication number" &&
                std::string(ele->FirstChildElement("Unit")->GetText()) != "Model / Version") {
                 std::string unit_str(ele->FirstChildElement("Unit")->GetText());
-                ESP_LOGD("hallo", "Unit: %s", unit_str.c_str());
+                //ESP_LOGD("hallo", "Unit: %s", unit_str.c_str());
 
                 const char* value = ele->FirstChildElement("Value")->GetText();
-                ESP_LOGD("hallo", "Value: %s", value);
+                //ESP_LOGD("hallo", "Value: %s", value);
                 
                 values.insert(std::make_pair(unit_str, atof(value)));
             }
@@ -96,7 +96,7 @@ void EngelmannMBus::loop() {
 
         for(std::map<std::string, float >::const_iterator it = values.begin();
                 it != values.end(); ++it) {
-                ESP_LOGD("hallo", "Key: %s, value: %f", it->first.c_str(), it->second);
+                //ESP_LOGD("hallo", "Key: %s, value: %f", it->first.c_str(), it->second);
                 if (it->first == "Flow temperature (deg C)") {
                     if (flow_temperature_sensor_ != nullptr) {
                         flow_temperature_sensor_->publish_state(it->second);
@@ -115,6 +115,16 @@ void EngelmannMBus::loop() {
                 if (it->first == "Power (W)") {
                     if (power_sensor_ != nullptr) {
                         power_sensor_->publish_state(it->second);
+                    }
+                }
+                if (it->first == "Volume flow (m m^3/h)") {
+                    if (flow_rate_sensor_ != nullptr) {
+                        flow_rate_sensor_->publish_state(it->second * 16.6667);
+                    }
+                }
+                if (it->first == "Volume (m m^3)") {
+                    if (volume_sensor_ != nullptr) {
+                        volume_sensor_->publish_state(it->second);
                     }
                 }
             }

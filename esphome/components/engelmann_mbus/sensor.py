@@ -10,6 +10,7 @@ from esphome.const import (
     UNIT_CELSIUS,
     UNIT_KELVIN,
     UNIT_WATT,
+    UNIT_CUBIC_METER,
 )
 
 DEPENDENCIES = ["uart"]
@@ -23,19 +24,23 @@ CONF_TEMPERATURE_A = "flow_temperature"
 CONF_TEMPERATURE_B = "return_temperature"
 CONF_TEMPERATURE_C = "difference_temperature"
 
+CONF_FLOW_RATE = "volume_flow_rate"
+
+CONF_VOLUME = "volume"
+
 CONFIG_SCHEMA = (
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(Engelmann_mbus),
             cv.Optional(CONF_TEMPERATURE_A): sensor.sensor_schema(
                 unit_of_measurement=UNIT_CELSIUS,
-                accuracy_decimals=2,
+                accuracy_decimals=0,
                 device_class=DEVICE_CLASS_TEMPERATURE,
                 state_class=STATE_CLASS_MEASUREMENT,
             ),
             cv.Optional(CONF_TEMPERATURE_B): sensor.sensor_schema(
                 unit_of_measurement=UNIT_CELSIUS,
-                accuracy_decimals=2,
+                accuracy_decimals=0,
                 device_class=DEVICE_CLASS_TEMPERATURE,
                 state_class=STATE_CLASS_MEASUREMENT,
             ),
@@ -47,8 +52,20 @@ CONFIG_SCHEMA = (
             ),
             cv.Optional(CONF_POWER): sensor.sensor_schema(
                 unit_of_measurement=UNIT_WATT,
-                accuracy_decimals=2,
+                accuracy_decimals=0,
                 device_class=DEVICE_CLASS_POWER,
+                state_class=STATE_CLASS_MEASUREMENT,
+            ),
+            cv.Optional(CONF_FLOW_RATE): sensor.sensor_schema(
+                unit_of_measurement="L/min",
+                accuracy_decimals=2,
+                device_class="volume_flow_rate",
+                state_class=STATE_CLASS_MEASUREMENT,
+            ),
+            cv.Optional(CONF_VOLUME): sensor.sensor_schema(
+                unit_of_measurement=UNIT_CUBIC_METER,
+                accuracy_decimals=0,
+                device_class="volume",
                 state_class=STATE_CLASS_MEASUREMENT,
             ),
         }
@@ -81,3 +98,11 @@ async def to_code(config):
         conf = config[CONF_POWER]
         sens = await sensor.new_sensor(conf)
         cg.add(var.set_power_sensor(sens))
+    if CONF_FLOW_RATE in config:
+        conf = config[CONF_FLOW_RATE]
+        sens = await sensor.new_sensor(conf)
+        cg.add(var.set_flow_rate_sensor(sens))
+    if CONF_VOLUME in config:
+        conf = config[CONF_VOLUME]
+        sens = await sensor.new_sensor(conf)
+        cg.add(var.set_volume_sensor(sens))
