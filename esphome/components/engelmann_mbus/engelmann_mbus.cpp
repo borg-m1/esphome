@@ -62,7 +62,7 @@ void EngelmannMBus::loop() {
 
             return;
         }
-        //ESP_LOGD("hallo", "%s", xml_result);
+        ESP_LOGD("hallo", "%s", xml_result);
 
         if(doc.Parse(xml_result) == tinyxml2::XMLError::XML_SUCCESS)
             ESP_LOGD("hallo", "doc parse success!");
@@ -73,10 +73,12 @@ void EngelmannMBus::loop() {
 			 ele = ele->NextSiblingElement() )
 		{
             const char* name = ele->Name();
-			ESP_LOGD("hallo", "%s", name);
-            if(std::string(name) == "DataRecord") {
+			//ESP_LOGD("hallo", "%s", name);
+            if(std::string(name) == "DataRecord" && 
+               std::string(ele->FirstChildElement("Function")->GetText()) == "Instantaneous value") {
                 std::string abcdef(ele->FirstChildElement("Unit")->GetText());
                 ESP_LOGD("hallo", "Unit: %s", abcdef.c_str());
+
                 std::size_t found = abcdef.find("Flow temperature");
                 std::string value(ele->FirstChildElement("Value")->GetText());
                 ESP_LOGD("hallo", "Value: %s", value.c_str());
